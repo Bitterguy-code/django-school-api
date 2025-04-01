@@ -4,8 +4,12 @@ from subject_app.validators import validate_professor_name, validate_subject_for
 
 # Create your models here.
 class Subject(models.Model):
-    subject_name = models.CharField(unique=True, validators=[validate_subject_format])
-    professor = models.CharField(unique=False, validators=[validate_professor_name])
+    subject_name = models.CharField(
+        blank=False, null=False, unique=True, validators=[validate_subject_format]
+        )
+    professor = models.CharField(
+        blank=False, null=False, unique=False, validators=[validate_professor_name]
+        )
     
     def add_a_student(self, pk):
         error_message = "This subject is full!"
@@ -21,3 +25,6 @@ class Subject(models.Model):
             raise Exception(error_message)
         else:
             self.students.remove(pk)
+            
+    # def __str__(self):
+    #     return f"{self.subject_name} - {self.professor}"

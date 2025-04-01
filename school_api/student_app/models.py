@@ -10,13 +10,29 @@ from student_app.validators import validate_combination_format, validate_email_f
 
 
 class Student(models.Model):
-    name = models.CharField(max_length=255, unique=False, validators=[validate_name_format])
-    student_email = models.EmailField(unique=True, validators=[validate_email_format])
-    personal_email = models.EmailField(null=True, unique=True)
-    locker_number = models.IntegerField(default=110, unique=True, validators=[v.MinValueValidator(1), v.MaxValueValidator(200)])
-    locker_combination = models.CharField(default='12-12-12', unique=False, validators=[validate_combination_format])
-    good_student = models.BooleanField(default=True, unique=False)
-    subjects = models.ManyToManyField(Subject, related_name='students', validators=[v.MinLengthValidator(1), v.MaxLengthValidator(8)])
+    name = models.CharField(
+        max_length=255, null=False, blank=False, validators=[validate_name_format]
+        )
+    student_email = models.EmailField(
+        null=False, blank=False, unique=True, validators=[validate_email_format]
+        )
+    personal_email = models.EmailField(
+        null=False, blank=False, unique=True
+        )
+    locker_number = models.IntegerField(
+        default=110,
+        null=False,
+        blank=False,
+        unique=True,
+        validators=[v.MinValueValidator(1), v.MaxValueValidator(200)])
+    locker_combination = models.CharField(default='12-12-12',
+                                          null=False,
+                                          blank=False,
+                                          unique=True,
+                                          max_length=255,
+                                          validators=[validate_combination_format])
+    good_student = models.BooleanField(default=True)
+    subjects = models.ManyToManyField(Subject, related_name='students')
     
     def add_subject(self, pk):
         error_message = "This students class schedule is full!"
@@ -33,11 +49,11 @@ class Student(models.Model):
             self.subjects.remove(pk)
     
     
-    def __str__(self):
-        return f"{self.name} - {self.student_email} - {self.locker_number}"
+    # def __str__(self):
+    #     return f"{self.name} - {self.student_email} - {self.locker_number}"
     
-    def locker_reassignment(self,new_locker):
-        self.locker_number=new_locker
+    # def locker_reassignment(self,new_locker):
+    #     self.locker_number=new_locker
         
-    def student_status(self, status):
-        self.good_student=status
+    # def student_status(self, status):
+    #     self.good_student=status
